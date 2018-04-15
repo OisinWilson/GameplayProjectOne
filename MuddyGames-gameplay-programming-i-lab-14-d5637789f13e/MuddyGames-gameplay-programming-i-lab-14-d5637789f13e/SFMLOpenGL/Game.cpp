@@ -286,10 +286,10 @@ void Game::initialize()
 	// https://github.com/nothings/stb/blob/master/stb_image.h
 	img_data = stbi_load(filename.c_str(), &width, &height, &comp_count, 4);
 
-	if (img_data == NULL)
-	{
-		DEBUG_MSG("ERROR: Texture not loaded");
-	}
+	//if (img_data == NULL)
+	//{
+	//	DEBUG_MSG("ERROR: Texture not loaded");
+	//}
 
 	glEnable(GL_TEXTURE_2D);
 	glGenTextures(1, &to[0]);
@@ -373,29 +373,25 @@ void Game::update()
 	// To alter Camera modify view & projection
 
 
-
-	//move player cube left and right
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-	{
-		model3 = translate(model3, glm::vec3(-0.005, 0, 0)); // Rotate
-		direction = {direction.ReturnX() - 0.005, direction.ReturnY() ,direction.ReturnZ() };
-	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-	{
-		model3 = translate(model3, glm::vec3(0.005, 0, 0)); // Rotate
-		direction = { direction.ReturnX() + 0.005, direction.ReturnY() ,direction.ReturnZ() };
-	}
-
 	if (!shot)
 	{
+		//move player cube left and right
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			model3 = translate(model3, glm::vec3(-0.005, 0, 0)); // Rotate
+			direction = { direction.ReturnX() - 0.005, direction.ReturnY() ,direction.ReturnZ() };
+		}
+		else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			model3 = translate(model3, glm::vec3(0.005, 0, 0)); // Rotate
+			direction = { direction.ReturnX() + 0.005, direction.ReturnY() ,direction.ReturnZ() };
+		}
+
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		{
 			shot = true;
 		}
 	}
-
-	//model = rotate(model, -0.001f, glm::vec3(0, -1, 0)); // Rotate
-	//model = translate(model, glm::vec3( 0.01, 0, 0));
 
 
 	mvp = projection * view * model;
@@ -411,8 +407,8 @@ void Game::update()
 	//move the shot forward
 	if (shot)
 	{
-		model3 = translate(model3, glm::vec3(0, 0, -0.1)); // Rotate
-		Game::direction = { Game::direction.ReturnX(), Game::direction.ReturnY(), Game::direction.ReturnZ() - 0.1 };
+		model3 = translate(model3, glm::vec3(0, 0, -0.05)); // Rotate
+		Game::direction = { Game::direction.ReturnX(), Game::direction.ReturnY(), Game::direction.ReturnZ() - 0.05 };
 	}
 	
 	//borders
