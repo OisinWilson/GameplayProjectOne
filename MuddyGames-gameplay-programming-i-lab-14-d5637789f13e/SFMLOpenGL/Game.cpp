@@ -46,7 +46,7 @@ int comp_count;					// Component of texture
 
 unsigned char* img_data;		// image data
 
-
+  
 mat4 mvp, mvp1, mvp2, mvp3, projection,
 		view, model, model1, model2, model3;			// Model View Projection
 
@@ -179,16 +179,12 @@ void Game::initialize()
 
 	// Vertices (3) x,y,z , Colors (4) RGBA, UV/ST (2)
 	glBufferData(GL_ARRAY_BUFFER, ((3 * VERTICES) + (4 * COLORS) + (2 * UVS)) * sizeof(GLfloat), NULL, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, ((3 * NPC_VERTICES) + (4 * NPC_COLORS) + (2 * NPC_UVS)) * sizeof(GLfloat), NULL, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, ((3 * PLAYER_VERTICES) + (4 * PLAYER_COLORS) + (2 * PLAYER_UVS)) * sizeof(GLfloat), NULL, GL_STATIC_DRAW);
 
 	glGenBuffers(1, &vib); //Generate Vertex Index Buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vib);
 
 	// Indices to be drawn
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * INDICES * sizeof(GLuint), indices, GL_STATIC_DRAW);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * NPC_INDICES * sizeof(GLuint), NpcIndices, GL_STATIC_DRAW);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * PLAYER_INDICES * sizeof(GLuint), PlayerIndices, GL_STATIC_DRAW);
 
 	// NOTE: uniforms values must be used within Shader so that they 
 	// can be retreived
@@ -336,23 +332,26 @@ void Game::initialize()
 
 	// Model matrix
 	model = mat4(
-		1.0f					// Identity Matrix
+		1.0f					// center
 		);
 	model = translate(model, glm::vec3(0.0f, -1.0f, -4.0f));
+
 	model1 = mat4(
-		1.0f					// Identity Matrix
+		1.0f					// left
 	);
 	model1 = translate(model1, glm::vec3(-6.0f, -1.0f, -4.0f));
+
 	model2 = mat4(
-		1.0f					// Identity Matrix
+		1.0f					// right
 		);
 	model2 = translate(model2, glm::vec3(6.0f, -1.0f, -4.0f));
+
 	model3 = mat4(
-		1.0f
+		1.0f					// player
 	);
 	model3 = translate(model3, glm::vec3(0.0f, -1.0f, 5.0f));
 
-	Game::direction = { 0.0f, -1.0f, 5.0f };
+	direction = { 0.0f, -1.0f, 5.0f };
 
 	// Enable Depth Test
 	glEnable(GL_DEPTH_TEST);
@@ -408,35 +407,35 @@ void Game::update()
 	if (shot)
 	{
 		model3 = translate(model3, glm::vec3(0, 0, -0.05)); // Rotate
-		Game::direction = { Game::direction.ReturnX(), Game::direction.ReturnY(), Game::direction.ReturnZ() - 0.05 };
+		direction = { direction.ReturnX(), direction.ReturnY(), Game::direction.ReturnZ() - 0.05 };
 	}
 	
 	//borders
-	if (Game::direction.ReturnZ() < -9)
+	if (direction.ReturnZ() < -9)
 	{
 		shot = false;
 		model3 = mat4(
 			1.0f
 		);
 		model3 = translate(model3, glm::vec3(direction.ReturnX(), -1.0f, 5.0f));
-		Game::direction = { direction.ReturnX(), -1.0f, 5.0f };
+		direction = { direction.ReturnX(), -1.0f, 5.0f };
 	}
 
-	if (Game::direction.ReturnX() < -9.0f)
+	if (direction.ReturnX() < -9.0f)
 	{
 		model3 = mat4(
 			1.0f
 		);
 		model3 = translate(model3, glm::vec3(9.0f, -1.0f, 5.0f));
-		Game::direction = { 9.0f, -1.0f, 5.0f };
+		direction = { 9.0f, -1.0f, 5.0f };
 	}
-	else if (Game::direction.ReturnX() > 9.0f)
+	else if (direction.ReturnX() > 9.0f)
 	{
 		model3 = mat4(
 			1.0f
 		);
 		model3 = translate(model3, glm::vec3(-9.0f, -1.0f, 5.0f));
-		Game::direction = { -9.0f, -1.0f, 5.0f };
+		direction = { -9.0f, -1.0f, 5.0f };
 	}
 
 
@@ -592,26 +591,23 @@ void Game::render()
 	glDrawElements(GL_TRIANGLES, 3 * INDICES, GL_UNSIGNED_INT, NULL);
 
 
-	glBufferSubData(GL_ARRAY_BUFFER, 0 * NPC_VERTICES * sizeof(GLfloat), 3 * NPC_VERTICES * sizeof(GLfloat), NpcVertices);
-	glBufferSubData(GL_ARRAY_BUFFER, 3 * NPC_VERTICES * sizeof(GLfloat), 4 * NPC_COLORS * sizeof(GLfloat), Npc1Colors);
-	glBufferSubData(GL_ARRAY_BUFFER, ((3 * NPC_VERTICES) + (4 * NPC_COLORS)) * sizeof(GLfloat), 2 * NPC_UVS * sizeof(GLfloat), uvs);
+	glBufferSubData(GL_ARRAY_BUFFER, 0 * VERTICES * sizeof(GLfloat), 3 * VERTICES * sizeof(GLfloat), NpcVertices);
+	glBufferSubData(GL_ARRAY_BUFFER, 3 * VERTICES * sizeof(GLfloat), 4 * COLORS * sizeof(GLfloat), Npc1Colors);
+	glBufferSubData(GL_ARRAY_BUFFER, ((3 * VERTICES) + (4 * COLORS)) * sizeof(GLfloat), 2 * UVS * sizeof(GLfloat), uvs);
 	glUniformMatrix4fv(mvpID[1], 1, GL_FALSE, &mvp1[0][0]);
-	glDrawElements(GL_TRIANGLES, 3 * NPC_INDICES, GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, 3 * INDICES, GL_UNSIGNED_INT, NULL);
 
-
-
-	glBufferSubData(GL_ARRAY_BUFFER, 0 * NPC_VERTICES * sizeof(GLfloat), 3 * NPC_VERTICES * sizeof(GLfloat), Npc2Vertices);
-	glBufferSubData(GL_ARRAY_BUFFER, 3 * NPC_VERTICES * sizeof(GLfloat), 4 * NPC_COLORS * sizeof(GLfloat), Npc2Colors);
-	glBufferSubData(GL_ARRAY_BUFFER, ((3 * NPC_VERTICES) + (4 * NPC_COLORS)) * sizeof(GLfloat), 2 * NPC_UVS * sizeof(GLfloat), uvs);
+	glBufferSubData(GL_ARRAY_BUFFER, 0 * VERTICES * sizeof(GLfloat), 3 * VERTICES * sizeof(GLfloat), Npc2Vertices);
+	glBufferSubData(GL_ARRAY_BUFFER, 3 * VERTICES * sizeof(GLfloat), 4 * COLORS * sizeof(GLfloat), Npc2Colors);
+	glBufferSubData(GL_ARRAY_BUFFER, ((3 * VERTICES) + (4 * COLORS)) * sizeof(GLfloat), 2 * UVS * sizeof(GLfloat), uvs);
 	glUniformMatrix4fv(mvpID[2], 1, GL_FALSE, &mvp2[0][0]);
-	glDrawElements(GL_TRIANGLES, 3 * NPC_INDICES, GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, 3 * INDICES, GL_UNSIGNED_INT, NULL);
 
-	
-	glBufferSubData(GL_ARRAY_BUFFER, 0 * PLAYER_VERTICES * sizeof(GLfloat), 3 * PLAYER_VERTICES * sizeof(GLfloat), PlayerVertices);
-	glBufferSubData(GL_ARRAY_BUFFER, 3 * PLAYER_VERTICES * sizeof(GLfloat), 4 * PLAYER_COLORS * sizeof(GLfloat), PlayerColors);
-	glBufferSubData(GL_ARRAY_BUFFER, ((3 * PLAYER_VERTICES) + (4 * PLAYER_COLORS)) * sizeof(GLfloat), 2 * PLAYER_UVS * sizeof(GLfloat), uvs);
+	glBufferSubData(GL_ARRAY_BUFFER, 0 * VERTICES * sizeof(GLfloat), 3 * VERTICES * sizeof(GLfloat), PlayerVertices);
+	glBufferSubData(GL_ARRAY_BUFFER, 3 * VERTICES * sizeof(GLfloat), 4 * COLORS * sizeof(GLfloat), PlayerColors);
+	glBufferSubData(GL_ARRAY_BUFFER, ((3 * VERTICES) + (4 * COLORS)) * sizeof(GLfloat), 2 * UVS * sizeof(GLfloat), uvs);
 	glUniformMatrix4fv(mvpID[3], 1, GL_FALSE, &mvp3[0][0]);
-	glDrawElements(GL_TRIANGLES, 3 * PLAYER_INDICES, GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, 3 * INDICES, GL_UNSIGNED_INT, NULL);
 
 
 	window.display();

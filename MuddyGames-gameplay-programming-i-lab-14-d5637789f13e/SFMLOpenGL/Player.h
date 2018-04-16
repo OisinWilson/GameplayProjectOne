@@ -8,10 +8,13 @@
 //@Known Bugs:
 // no known bugs
 
-const int PLAYER_VERTICES	= 24;	// Total Number of Vertices
-const int PLAYER_INDICES	= 12;	// Total Number of Indexes
-const int PLAYER_UVS		= 48;	// Total Number of UVs
-const int PLAYER_COLORS	= 24;	// Total Number of Colors
+
+class Player {
+public:
+	Player();
+private:
+};
+
 
 static const GLfloat PlayerVertices[] =
 {
@@ -89,31 +92,4 @@ static const GLfloat PlayerColors[] = {
 	1.0f, 0.0f, 0.0f, 1.0f, // [5]	// (21)
 	1.0f, 0.0f, 0.0f, 1.0f, // [6]	// (22)
 	1.0f, 0.0f, 0.0f, 1.0f, // [2]	// (23)
-};
-
-static const GLuint PlayerIndices[] =
-{
-	// Front Face
-	0, 1, 2,
-	2, 3, 0,
-
-	// Top Face
-	4, 5, 6,
-	6, 7, 4,
-
-	// Back Face
-	8, 9, 10,
-	10, 11, 8,
-
-	// Bottom Face
-	12, 13, 14,
-	14, 15, 12,
-
-	// Left Face
-	16, 17, 18,
-	18, 19, 16,
-
-	// Right Face
-	20, 21, 22,
-	22, 23, 20
 };

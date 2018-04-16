@@ -2,15 +2,20 @@
 
 #include <gl/glew.h>
 
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 //@author Oisin Wilson
 //@login C00213826
 //@Known Bugs:
 // no known bugs
 
-const int NPC_VERTICES	= 24;	// Total Number of Vertices
-const int NPC_INDICES	= 12;	// Total Number of Indexes
-const int NPC_UVS		= 48;	// Total Number of UVs
-const int NPC_COLORS	= 24;	// Total Number of Colors
+class NPC {
+public:
+	NPC();
+private:
+};
 
 static const GLfloat NpcVertices[] =
 {
@@ -166,41 +171,4 @@ static const GLfloat Npc2Colors[] = {
 	0.0f, 0.0f, 1.0f, 1.0f, // [5]	// (21)
 	0.0f, 0.0f, 1.0f, 1.0f, // [6]	// (22)
 	0.0f, 0.0f, 1.0f, 1.0f, // [2]	// (23)
-};
-
-//
-//GLfloat NpcUvs[2 * 4 * 6] = {
-//	// Front Face (other faces populated in initialisation)
-//	0.0, 0.0,
-//	1.0, 0.0,
-//	1.0, 1.0,
-//	0.0, 1.0
-//};
-
-
-static const GLuint NpcIndices[] =
-{
-	// Front Face
-	0, 1, 2,
-	2, 3, 0,
-
-	// Top Face
-	4, 5, 6,
-	6, 7, 4,
-
-	// Back Face
-	8, 9, 10,
-	10, 11, 8,
-
-	// Bottom Face
-	12, 13, 14,
-	14, 15, 12,
-
-	// Left Face
-	16, 17, 18,
-	18, 19, 16,
-
-	// Right Face
-	20, 21, 22,
-	22, 23, 20
 };
